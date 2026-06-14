@@ -1,0 +1,46 @@
+# 序列图 — D2 示例
+
+D2 的 dagre 布局引擎天然适合画序列图：
+参与者自动排成一列，箭头从上到下穿行。
+
+```d2
+vars: {
+  d2-config: {
+    layout-engine: dagre
+    theme-id: 0
+  }
+}
+
+标题: {
+  label: "OAuth 2.0 授权码流程"
+  near: top-center
+  style.font-size: 20
+}
+
+用户 -> 浏览器: 访问应用
+浏览器 -> 应用: 重定向到授权
+
+应用 -> 授权服务器: 授权码请求\n(client_id + redirect_uri)
+授权服务器 -> 用户: 显示登录页
+用户 -> 授权服务器: 输入凭证
+授权服务器 -> 用户: 授权确认
+用户 -> 授权服务器: 确认
+授权服务器 -> 浏览器: 授权码\n(redirect_uri + code)
+浏览器 -> 应用: 授权码
+
+应用 -> 授权服务器: 换取令牌\n(code + client_secret)
+授权服务器 -> 应用: access_token + refresh_token {
+  style.stroke-dash: 3
+}
+应用 -> 浏览器: 登录成功 {
+  style.stroke-dash: 3
+}
+浏览器 -> 用户: 展示主页 {
+  style.stroke-dash: 3
+}
+```
+
+运行：
+```bash
+d2 sequence.d2 sequence.svg
+```
