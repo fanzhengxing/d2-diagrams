@@ -1,0 +1,93 @@
+# 流程图 — D2 示例
+
+```d2
+vars: {
+  d2-config: {
+    layout-engine: dagre
+    theme-id: 0
+  }
+}
+
+标题: {
+  label: "CI/CD 流水线"
+  near: top-center
+  style.font-size: 20
+}
+
+开始: {
+  shape: oval
+  style.fill: "#22c55e"
+  style.font-color: "#fff"
+}
+
+代码提交: {
+  style.fill: "#a5d8ff"
+}
+
+代码审查: {
+  style.fill: "#d0bfff"
+}
+
+审查通过: {
+  shape: diamond
+  style.fill: "#fff3bf"
+}
+
+构建: {
+  style.fill: "#a5d8ff"
+}
+
+测试: {
+  style.fill: "#a5d8ff"
+}
+
+测试通过: {
+  shape: diamond
+  style.fill: "#fff3bf"
+}
+
+修复: {
+  style.fill: "#ffc9c9"
+}
+
+部署staging: {
+  label: "部署 Staging"
+  style.fill: "#b2f2bb"
+}
+
+集成测试: {
+  style.fill: "#a5d8ff"
+}
+
+部署生产: {
+  label: "部署生产"
+  style.fill: "#b2f2bb"
+  style.bold: true
+}
+
+通知: {
+  style.fill: "#fff3bf"
+  style.stroke-dash: 3
+}
+
+结束: {
+  shape: oval
+  style.fill: "#22c55e"
+  style.font-color: "#fff"
+}
+
+开始 -> 代码提交 -> 代码审查 -> 审查通过
+审查通过 -> 构建 -> 测试 -> 测试通过
+审查通过 -> 修复: 不通过 {style.stroke: "#ef4444"}
+修复 -> 代码提交
+
+测试通过 -> 部署staging -> 集成测试
+测试通过 -> 修复: 失败 {style.stroke: "#ef4444"}
+
+集成测试 -> 部署生产 -> 通知 -> 结束
+```
+
+运行：
+```bash
+d2 flowchart.d2 flowchart.svg
+```

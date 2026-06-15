@@ -1,0 +1,139 @@
+# 架构图 — D2 示例
+
+这个示例展示了完整的五层 ETL 数据架构 D2 用法：
+数据源层 → ODS 贴源层 → DW 仓库层 → DM 集市层 → 应用层
+
+```d2
+vars: {
+  d2-config: {
+    layout-engine: elk
+    theme-id: 300
+  }
+}
+
+数据源层: {
+  label: "数据源层"
+
+  基层系统: {
+    shape: cylinder
+    label: "基层HIS/EMR"
+  }
+
+  公卫系统: {
+    shape: cylinder
+    label: "公卫系统"
+  }
+
+  疾控平台: {
+    shape: cylinder
+    label: "疾控平台"
+  }
+}
+
+ODS贴源层: {
+  label: "ODS 贴源层"
+
+  ODS_HIS: {
+    shape: cylinder
+    label: "ods_his_*"
+    style.font-size: 11
+  }
+
+  ODS_公卫: {
+    shape: cylinder
+    label: "ods_公共卫生_*"
+    style.font-size: 11
+  }
+
+  ODS_疾控: {
+    shape: cylinder
+    label: "ods_疾控_*"
+    style.font-size: 11
+  }
+}
+
+DW数据仓库层: {
+  label: "DW 数据仓库层"
+
+  DWD: {
+    shape: cylinder
+    label: "dwd_patient_service_1d"
+    style.font-size: 11
+    style.multiple: true
+  }
+
+  DWS: {
+    shape: cylinder
+    label: "dws_慢病汇总"
+    style.font-size: 11
+    style.multiple: true
+  }
+}
+
+DM数据集市层: {
+  label: "DM 数据集市层"
+
+  控制率报表: {
+    shape: cylinder
+    label: "dm_控制率_*"
+    style.font-size: 11
+    style.multiple: true
+  }
+
+  个案管理: {
+    shape: cylinder
+    label: "dm_个案管理_*"
+    style.font-size: 11
+    style.multiple: true
+  }
+
+  质控指标: {
+    shape: cylinder
+    label: "dm_质控指标_*"
+    style.font-size: 11
+    style.multiple: true
+  }
+}
+
+应用层: {
+  label: "应用层"
+
+  大屏展示: {
+    shape: hexagon
+    label: "领导驾驶舱"
+  }
+
+  监管平台: {
+    shape: hexagon
+    label: "综合监管平台"
+  }
+
+  质控系统: {
+    shape: hexagon
+    label: "ODS 质控系统"
+  }
+}
+
+数据源层.基层系统 -> ODS贴源层.ODS_HIS: 定时抽取
+数据源层.公卫系统 -> ODS贴源层.ODS_公卫: 定时抽取
+数据源层.疾控平台 -> ODS贴源层.ODS_疾控: 对接接口
+
+ODS贴源层.ODS_HIS -> DW数据仓库层.DWD: ETL 清洗
+ODS贴源层.ODS_公卫 -> DW数据仓库层.DWD: ETL 清洗
+ODS贴源层.ODS_疾控 -> DW数据仓库层.DWD: ETL 清洗
+
+DW数据仓库层.DWD -> DW数据仓库层.DWS: 轻度汇总
+
+DW数据仓库层.DWS -> DM数据集市层.控制率报表: 控制率计算
+DW数据仓库层.DWS -> DM数据集市层.个案管理: 慢病个案
+DW数据仓库层.DWS -> DM数据集市层.质控指标: 数据质量
+
+DM数据集市层.控制率报表 -> 应用层.大屏展示: 可视化
+DM数据集市层.个案管理 -> 应用层.监管平台: 精细化管理
+DM数据集市层.质控指标 -> 应用层.质控系统: 质控规则
+```
+
+运行：
+```bash
+d2 architecture.d2 architecture.svg
+```

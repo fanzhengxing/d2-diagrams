@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="page1">
+    <mxGraphModel dx="1420" dy="786" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <!-- 前端层 -->
+        <mxCell id="g-fe" value="展示层" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=#dbeafe;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="50" width="800" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="fe-react" value="React 前端" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4a9eed;fontColor=#ffffff;" vertex="1" parent="g-fe">
+          <mxGeometry x="100" y="90" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="fe-api" value="API 网关" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4a9eed;fontColor=#ffffff;" vertex="1" parent="g-fe">
+          <mxGeometry x="500" y="90" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a-fe" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeWidth=2;" edge="1" parent="g-fe" source="fe-react" target="fe-api" />
+
+        <!-- 业务层 -->
+        <mxCell id="g-biz" value="业务层" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=#dcfce7;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="220" width="800" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="biz-user" value="用户服务" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#22c55e;fontColor=#ffffff;" vertex="1" parent="g-biz">
+          <mxGeometry x="100" y="260" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="biz-order" value="订单服务" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#22c55e;fontColor=#ffffff;" vertex="1" parent="g-biz">
+          <mxGeometry x="350" y="260" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a-biz1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=2;" edge="1" parent="1" source="fe-api" target="biz-user" />
+        <mxCell id="a-biz2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=2;" edge="1" parent="1" source="fe-api" target="biz-order" />
+
+        <!-- 数据层 -->
+        <mxCell id="g-data" value="数据层" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=#e5dbff;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="390" width="800" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="db-pg" value="PostgreSQL" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#8b5cf6;fontColor=#ffffff;" vertex="1" parent="g-data">
+          <mxGeometry x="100" y="430" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="db-redis" value="Redis" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#8b5cf6;fontColor=#ffffff;" vertex="1" parent="g-data">
+          <mxGeometry x="350" y="430" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="a-data1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=2;" edge="1" parent="1" source="biz-user" target="db-pg" />
+        <mxCell id="a-data2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=2;" edge="1" parent="1" source="biz-order" target="db-pg" />
+        <mxCell id="a-data3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=2;" edge="1" parent="1" source="biz-order" target="db-redis" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
