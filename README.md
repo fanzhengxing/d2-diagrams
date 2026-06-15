@@ -1,11 +1,12 @@
 # D2 Diagrams 🎯
 
-> **One skill to diagram them all.** Text → professional diagrams with auto layout.
+> **One skill to diagram them all.** 说句话就出图 — 自然语言 → 专业图表，自动布局。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![D2](https://img.shields.io/badge/D2-v0.7.1+-orange)](https://github.com/terrastruct/d2)
 [![Hermes](https://img.shields.io/badge/Hermes-Skill-purple)](https://hermes-agent.nousresearch.com)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Skill-green)](https://code.claude.com)
+[![GitHub Stars](https://img.shields.io/github/stars/fanzhengxing/d2-diagrams?style=social)](https://github.com/fanzhengxing/d2-diagrams)
 
 ```
                                              ╭──────────────────────╮
@@ -20,7 +21,9 @@
 ## 🌟 一句话
 
 **说句话就出图** — 用自然语言描述你的系统，D2 自动布局生成专业图表。
-支持 13 种图类型、7 种输出格式、22 个内置主题。
+支持 **13 种图类型、7 种输出格式、22 个内置主题**。
+
+Built on [terrastruct/d2](https://github.com/terrastruct/d2) (24.4K⭐) — the most popular text-to-diagram engine.
 
 ## 🎨 能画什么
 
@@ -97,6 +100,23 @@ d2 input.d2 output.txt       # ASCII 纯文本（微信聊天友好）
 | **[fireworks-tech-graph](https://www.npmjs.com/package/@yizhiyanhua-ai/fireworks-tech-graph)** (CC) | UML 全套覆盖 + 形状词汇 + 正式图类型定义 |
 | **[design-system](https://github.com/Sunwood-ai-labs/draw-io-skill)** (CC) | 医疗暗色主题配色（科技蓝/健康绿/警告橙） |
 
+## 📂 文件结构
+
+```
+d2-diagrams/
+├── SKILL.md                    # Skill 主定义（含完整工作流）
+├── README.md                   # 本文件（公共传播页）
+├── references/
+│   ├── d2-cheatsheet.md        # D2 语法速查
+│   └── examples/               # 各类图的 D2 源文件
+│       ├── architecture.d2     # 架构图示例
+│       ├── flowchart.d2        # 流程图示例
+│       └── sequence.d2         # 序列图示例
+├── templates/
+│   └── architecture-wrapper.html  # SVG→HTML 暗色包装模板
+└── test-prompts.json           # 验证测试用例
+```
+
 ## 🛡️ 安全
 
 - ✅ 全程本地运行，无外部 API 调用
@@ -113,25 +133,7 @@ d2 input.d2 output.txt       # ASCII 纯文本（微信聊天友好）
 
 ### Claude Code
 ```bash
-# 复制到 skill 目录
 cp -r d2-diagrams/ ~/.claude/skills/
-```
-
-## 📁 文件结构
-
-```
-d2-diagrams/
-├── SKILL.md                    # Skill 主定义（含完整工作流）
-├── README.md                   # 本文件（公共传播页）
-├── references/
-│   ├── d2-cheatsheet.md        # D2 语法速查
-│   └── examples/               # 各类图的 D2 源文件
-│       ├── architecture.d2     # 架构图示例
-│       ├── flowchart.d2        # 流程图示例
-│       └── sequence.d2         # 序列图示例
-├── templates/
-│   └── architecture-wrapper.html  # SVG→HTML 暗色包装模板
-└── test-prompts.json           # 验证测试用例
 ```
 
 ## 📝 License
