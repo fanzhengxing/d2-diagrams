@@ -120,6 +120,29 @@ d2 --watch input.d2 output.svg                 # live reload
 2. Replace `[SVG_CONTENT]` with the SVG markup
 3. Fill in Summary Card titles and items
 
+### Step 6: HTML Interactive Diagram (effective-html fusion)
+
+When user wants a **full-screen interactive HTML diagram** (not just static SVG), generate a self-contained HTML file with:
+
+**Core principles (from effective-html):**
+- **Light on prose** — the diagram IS the content, not a page with a diagram
+- **High-quality SVG** — hand-crafted SVG, not auto-generated
+- **Dark mode** — CSS variables on `:root` / `html.dark`, theme toggle button, `localStorage` persistence
+- **Apply-before-paint** — `<script>` in `<head>` to prevent flash of light mode
+- **Flow animation** — clickable flow chips that highlight request paths with marching ants animation
+- **Clickable nodes** — hover highlights, detail cards on click
+
+**Workflow:**
+1. Generate D2 source for the diagram structure
+2. Render to SVG (or hand-write SVG for complex layouts)
+3. Copy `templates/html-diagram.html` as base, replace placeholders:
+   - `{title}` → diagram title
+   - `{WIDTH}` / `{HEIGHT}` → SVG viewBox dimensions
+   - `<!-- SVG diagram from D2 or hand-crafted -->` → actual SVG markup
+   - Add flow chips for different scenarios
+   - Add clickable nodes with detail cards
+4. Save as `.html` file — fully self-contained, no external dependencies
+
 ---
 
 ## Diagram Type Details
@@ -395,13 +418,13 @@ d2 input.d2 output.svg
 | Scenario | Why NOT | Use instead |
 |----------|---------|-------------|
 | Animated charts/graphs | D2 outputs static SVG/PNG | p5js, manim-video |
-| Interactive dashboards | D2 is static diagrams | html/css/js, officecli-data-dashboard |
 | Bar/line/pie charts | D2 not a charting library | officecli-chart-colors (Excel) |
 | Photo-realistic diagrams | D2 is vector diagrams | comfyui, canvas-design |
 | Complex 3D rendering | D2 is 2D only | manim-video, p5js |
 | Editing existing draw.io files | D2 has different format | drawio skill |
 | Simple text annotation | Overkill for one label | Just type it |
 | Database ERD from live schema | D2 can't reverse-engineer | sqlkg (SQL parsing) |
+| Data visualization dashboards | D2 is static diagrams | officecli-data-dashboard |
 
 ---
 
