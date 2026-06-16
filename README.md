@@ -100,6 +100,7 @@ d2 input.d2 output.html      # 交互式 HTML（暗色模式 + 流动画 + 点�
 | **[architecture-diagram](https://github.com/Cocoon-AI/architecture-diagram-generator)** (5.9K⭐) | 语义配色体系 + HTML 暗色包装模板 + Summary Cards |
 | **excalidraw** (Hermes 自带) | `--sketch` 手绘美学 + 粉彩调色板 + 9 种图类型分类 |
 | **[fireworks-tech-graph](https://www.npmjs.com/package/@yizhiyanhua-ai/fireworks-tech-graph)** (CC) | UML 全套覆盖 + 形状词汇 + 正式图类型定义 |
+| **effective-html** | 全屏交互 HTML 图：暗色模式 + 流动画 + 点击详情 + 主题切换 + localStorage 持久化 |
 | **[design-system](https://github.com/Sunwood-ai-labs/draw-io-skill)** (CC) | 医疗暗色主题配色（科技蓝/健康绿/警告橙） |
 
 ## 📂 文件结构
