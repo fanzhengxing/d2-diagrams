@@ -4,8 +4,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![D2](https://img.shields.io/badge/D2-v0.7.1+-orange)](https://github.com/terrastruct/d2)
-[![Hermes](https://img.shields.io/badge/Hermes-Skill-purple)](https://hermes-agent.nousresearch.com)
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-Skill-green)](https://code.claude.com)
+[![Agent Skills Standard](https://img.shields.io/badge/Agent_Skills-Standard-blue)](https://agentskills.io)
+[![Multi-Runtime](https://img.shields.io/badge/Multi--Runtime-Claude+Codex+Cursor+Hermes-orange)](https://github.com/fanzhengxing/d2-diagrams)
 [![GitHub Stars](https://img.shields.io/github/stars/fanzhengxing/d2-diagrams?style=social)](https://github.com/fanzhengxing/d2-diagrams)
 
 ```
