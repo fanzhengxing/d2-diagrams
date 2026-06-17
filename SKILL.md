@@ -1,21 +1,15 @@
 ---
 name: d2-diagrams
 description: >-
-  D2-powered universal diagram skill. Uses D2 CLI (terrastruct/d2, 24.4K⭐)
-  with declarative syntax, auto layout, multi-format output
-  (SVG/PNG/PDF/PPTX/GIF/ASCII/HTML).
-
-  Fuses: architecture-diagram's semantic colors + excalidraw's hand-drawn
-  aesthetics + fireworks-tech-graph's UML coverage + excalidraw's pastel palette.
+  One skill to diagram them all. D2-powered: describe in text, get professional
+  diagrams in SVG/PNG/PDF/PPTX/GIF/ASCII/HTML — with auto layout.
+  Absorbs: architecture-diagram (semantic colors + HTML wrapper) + excalidraw (hand-drawn + pastel) + fireworks-tech-graph (UML) + effective-html (interactive HTML).
 
   TRIGGER on: 画图/架构图/流程图/序列图/类图/ER图/思维导图/时间线/网络拓扑/
   状态机/用例图/对比图/数据流图/可视化/拓扑图/示意图/
   architecture/flowchart/sequence diagram/class diagram/er diagram/
   timeline/mind map/uml/system diagram/network topology/
-  create a diagram/draw diagram/generate diagram
-
-  NOTE: This skill REPLACES `architecture-diagram` and `excalidraw`.
-  Those are preserved only for backward compatibility.
+  create a diagram/draw diagram/generate diagram/data flow diagram/interactive diagram/full-screen diagram
 version: 1.0.0
 license: MIT
 dependencies:
@@ -115,12 +109,32 @@ d2 --theme=200 --sketch input.d2 output.svg   # dark + hand-drawn
 d2 --watch input.d2 output.svg                 # live reload
 ```
 
+### macOS Installation
+
+```bash
+brew install d2
+d2 version  # verify
+```
+
+### Linux Installation
+
+```bash
+# Ubuntu/Debian via apt
+sudo apt-get install d2
+# Or via snap
+sudo snap install d2 --classic
+```
+
+### Minimum Version
+
+D2 v0.6.0+ required (2023-09 release). Older versions lack `--layout=elk` and some themes.
+
 ### Step 5: Optional HTML Wrapper (Architecture only)
 1. Generate SVG, then load `templates/architecture-wrapper.html`
 2. Replace `[SVG_CONTENT]` with the SVG markup
 3. Fill in Summary Card titles and items
 
-### Step 6: HTML Interactive Diagram (effective-html fusion)
+### Step 7: HTML Interactive Diagram (effective-html fusion)
 
 When user wants a **full-screen interactive HTML diagram** (not just static SVG), generate a self-contained HTML file with:
 
@@ -142,6 +156,43 @@ When user wants a **full-screen interactive HTML diagram** (not just static SVG)
    - Add flow chips for different scenarios
    - Add clickable nodes with detail cards
 4. Save as `.html` file — fully self-contained, no external dependencies
+
+---
+
+## 🎯 End-to-End Example (完整示例)
+
+Here's a complete workflow from D2 source to HTML deliverable:
+
+**1. Write D2 source** (`arch.d2`):
+```d2
+vars: { d2-config: { layout-engine: dagre } }
+title: { label: "用户服务架构图"; near: top-center; style.font-size: 24 }
+frontend: 用户前端 { shape: hexagon; style.fill: "#22d3ee" }
+gateway: API网关 { shape: hexagon; style.fill: "#fbbf24" }
+users: 用户服务 { style.fill: "#34d399" }
+orders: 订单服务 { style.fill: "#34d399" }
+db: { shape: cylinder; style.fill: "#a78bfa" }
+frontend -> gateway: HTTPS
+gateway -> users: REST
+gateway -> orders: REST
+users -> db: SELECT
+orders -> db: INSERT
+```
+
+**2. Render to SVG**:
+```bash
+d2 arch.d2 arch.svg
+```
+
+**3. Wrap in HTML** (optional, for architecture diagrams):
+- Copy `templates/architecture-wrapper.html`
+- Replace `[SVG_CONTENT]` with SVG markup
+- Fill Summary Cards
+
+**4. Or generate interactive HTML** (Step 7):
+- Copy `templates/html-diagram.html`
+- Replace placeholders
+- Save as `arch.html`
 
 ---
 
@@ -383,6 +434,12 @@ d2 input.d2 output.svg
 # Then convert SVG -> PNG manually
 ```
 
+### Large SVG files (>5MB)
+Large D2 diagrams with many nodes produce huge SVGs. When embedding in HTML:
+- **Limit**: Keep under 5MB SVG for smooth browser rendering
+- **Workaround**: Use `d2 --pad 40` to reduce spacing, or split into multiple diagrams
+- **Alternative**: Export as PNG instead for smaller file size
+
 ### PDF/PPTX/GIF fail
 These formats require more system resources. Try SVG first:
 ```bash
@@ -417,6 +474,8 @@ d2 input.d2 output.svg
 
 | Scenario | Why NOT | Use instead |
 |----------|---------|-------------|
+| **7+ independent data flows** | **D2垂直泳道文字小、交叉多；纯CSS横向泳道清晰** | **纯CSS/HTML手写** (见 `references/css-handwritten-diagrams.md`) |
+| **Need large readable text** | **D2 default font small & grey** | **PureCSS** (see `references/css-handwritten-diagrams.md`) |
 | Animated charts/graphs | D2 outputs static SVG/PNG | p5js, manim-video |
 | Bar/line/pie charts | D2 not a charting library | officecli-chart-colors (Excel) |
 | Photo-realistic diagrams | D2 is vector diagrams | comfyui, canvas-design |
