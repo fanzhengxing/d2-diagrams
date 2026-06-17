@@ -335,13 +335,15 @@ Dark: 200=Dark Mauve, 201=Dark Flagship
 
 | Component | Fill | Stroke |
 |-----------|------|--------|
-| Frontend | rgba(8,51,68,0.4) | #22d3ee |
-| Backend | rgba(6,78,59,0.4) | #34d399 |
-| Database | rgba(76,29,149,0.4) | #a78bfa |
-| Cloud/AWS | rgba(120,53,15,0.3) | #fbbf24 |
-| Security | rgba(136,19,55,0.4) | #fb7185 |
-| Message Bus | rgba(251,146,60,0.3) | #fb923c |
-| External | rgba(30,41,59,0.5) | #94a3b8 |
+| Frontend | #ecfeff | #22d3ee |
+| Backend | #f0fdf4 | #34d399 |
+| Database | #f5f3ff | #a78bfa |
+| Cloud/AWS | #fffbeb | #fbbf24 |
+| Security | #fff1f2 | #fb7185 |
+| Message Bus | #fff7ed | #fb923c |
+| External | #f8fafc | #94a3b8 |
+
+> **Note:** D2 v0.7.1 only accepts hex colors (e.g. `#ecfeff`) or named colors. `rgba()` is NOT supported and will cause a compile error.
 
 ### Pastel Palette (Whiteboard / `--sketch` mode)
 

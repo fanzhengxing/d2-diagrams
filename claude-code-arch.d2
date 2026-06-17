@@ -1,0 +1,250 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+    theme-id: 0
+  }
+}
+
+title: {
+  label: "Claude Code — Architecture Overview"
+  near: top-center
+  style.font-size: 22
+  style.bold: true
+  style.font-color: "#1e293b"
+}
+
+# ── User Interface Layer ─────────────────────────────────────────────
+user_layer: "User Interface" {
+  style.fill: "#ecfeff"
+  style.stroke: "#22d3ee"
+  style.stroke-width: 2
+  style.font-size: 14
+  style.bold: true
+  style.font-color: "#0e7490"
+
+  terminal: "Terminal\n(claude CLI)" {
+    shape: hexagon
+    style.fill: "#cffafe"
+    style.stroke: "#22d3ee"
+    style.font-size: 12
+  }
+  vscode: "VS Code\nExtension" {
+    shape: hexagon
+    style.fill: "#cffafe"
+    style.stroke: "#22d3ee"
+    style.font-size: 12
+  }
+  jetbrains: "JetBrains\nPlugin" {
+    shape: hexagon
+    style.fill: "#cffafe"
+    style.stroke: "#22d3ee"
+    style.font-size: 12
+  }
+  web: "Web App\n(claude.ai/code)" {
+    shape: hexagon
+    style.fill: "#cffafe"
+    style.stroke: "#22d3ee"
+    style.font-size: 12
+  }
+}
+
+# ── CLI / REPL Layer ─────────────────────────────────────────────────
+cli_layer: "CLI / REPL Layer" {
+  style.fill: "#fff7ed"
+  style.stroke: "#fb923c"
+  style.stroke-width: 2
+  style.font-size: 14
+  style.bold: true
+  style.font-color: "#c2410c"
+
+  repl: "REPL\n(interactive loop)" {
+    style.fill: "#ffedd5"
+    style.stroke: "#fb923c"
+    style.font-size: 12
+  }
+  slash_cmds: "Slash Commands\n(/help /clear /plan)" {
+    style.fill: "#ffedd5"
+    style.stroke: "#fb923c"
+    style.font-size: 12
+  }
+  skills: "Skills System\n(~/.claude/skills/)" {
+    style.fill: "#ffedd5"
+    style.stroke: "#fb923c"
+    style.font-size: 12
+  }
+  hooks: "Hooks\n(settings.json)" {
+    style.fill: "#ffedd5"
+    style.stroke: "#fb923c"
+    style.font-size: 12
+  }
+  memory: "Memory System\n(CLAUDE.md / .md files)" {
+    style.fill: "#ffedd5"
+    style.stroke: "#fb923c"
+    style.font-size: 12
+  }
+}
+
+# ── Agent Core Layer ─────────────────────────────────────────────────
+agent_layer: "Agent Core" {
+  style.fill: "#f0fdf4"
+  style.stroke: "#34d399"
+  style.stroke-width: 2
+  style.font-size: 14
+  style.bold: true
+  style.font-color: "#065f46"
+
+  main_loop: "Main Loop\n(turn-based)" {
+    style.fill: "#d1fae5"
+    style.stroke: "#34d399"
+    style.font-size: 12
+    style.bold: true
+  }
+  context_mgr: "Context Manager\n(compression / inject)" {
+    style.fill: "#d1fae5"
+    style.stroke: "#34d399"
+    style.font-size: 12
+  }
+  tool_executor: "Tool Executor\n(permission check)" {
+    style.fill: "#d1fae5"
+    style.stroke: "#34d399"
+    style.font-size: 12
+  }
+  plan_mode: "Plan Mode\n(EnterPlanMode)" {
+    style.fill: "#d1fae5"
+    style.stroke: "#34d399"
+    style.font-size: 12
+  }
+  subagent_mgr: "Sub-Agent Manager\n(Agent / Workflow)" {
+    style.fill: "#d1fae5"
+    style.stroke: "#34d399"
+    style.font-size: 12
+  }
+}
+
+# ── Tool Layer ────────────────────────────────────────────────────────
+tool_layer: "Built-in Tools" {
+  style.fill: "#f5f3ff"
+  style.stroke: "#a78bfa"
+  style.stroke-width: 2
+  style.font-size: 14
+  style.bold: true
+  style.font-color: "#5b21b6"
+
+  file_tools: "File Tools\n(Read/Write/Edit/Glob)" {
+    style.fill: "#ede9fe"
+    style.stroke: "#a78bfa"
+    style.font-size: 12
+  }
+  bash_tool: "Bash Tool\n(shell execution)" {
+    style.fill: "#ede9fe"
+    style.stroke: "#a78bfa"
+    style.font-size: 12
+  }
+  search_tools: "Search Tools\n(Grep / WebSearch)" {
+    style.fill: "#ede9fe"
+    style.stroke: "#a78bfa"
+    style.font-size: 12
+  }
+  browser_tools: "Browser Tools\n(Playwright MCP)" {
+    style.fill: "#ede9fe"
+    style.stroke: "#a78bfa"
+    style.font-size: 12
+  }
+  task_tools: "Task Tools\n(TaskCreate/Update)" {
+    style.fill: "#ede9fe"
+    style.stroke: "#a78bfa"
+    style.font-size: 12
+  }
+  mcp_servers: "MCP Servers\n(plugin ecosystem)" {
+    style.fill: "#ede9fe"
+    style.stroke: "#a78bfa"
+    style.font-size: 12
+    style.multiple: true
+  }
+}
+
+# ── External Layer ────────────────────────────────────────────────────
+external_layer: "External Services" {
+  style.fill: "#fffbeb"
+  style.stroke: "#fbbf24"
+  style.stroke-width: 2
+  style.stroke-dash: 4
+  style.font-size: 14
+  style.bold: true
+  style.font-color: "#92400e"
+
+  anthropic_api: "Anthropic API\n(Messages API)" {
+    shape: cloud
+    style.fill: "#fef3c7"
+    style.stroke: "#fbbf24"
+    style.font-size: 12
+  }
+  claude_models: "Claude Models\n(Opus/Sonnet/Haiku)" {
+    shape: cylinder
+    style.fill: "#fef3c7"
+    style.stroke: "#fbbf24"
+    style.font-size: 12
+  }
+  github: "GitHub\n(gh CLI / PRs)" {
+    shape: cloud
+    style.fill: "#fef3c7"
+    style.stroke: "#fbbf24"
+    style.font-size: 12
+  }
+  web_services: "Web Services\n(WebFetch / WebSearch)" {
+    shape: cloud
+    style.fill: "#fef3c7"
+    style.stroke: "#fbbf24"
+    style.font-size: 12
+  }
+}
+
+# ── Connections ───────────────────────────────────────────────────────
+# User → CLI
+user_layer.terminal -> cli_layer.repl: "input / output"
+user_layer.vscode -> cli_layer.repl: "LSP bridge"
+user_layer.jetbrains -> cli_layer.repl: "LSP bridge"
+user_layer.web -> cli_layer.repl: "WebSocket"
+
+# CLI → Agent
+cli_layer.repl -> agent_layer.main_loop: "user message"
+cli_layer.slash_cmds -> agent_layer.main_loop: "command"
+cli_layer.skills -> agent_layer.main_loop: "skill context"
+cli_layer.hooks -> agent_layer.tool_executor: "pre/post hook"
+cli_layer.memory -> agent_layer.context_mgr: "inject CLAUDE.md"
+
+# Agent internal
+agent_layer.main_loop -> agent_layer.context_mgr: "build prompt"
+agent_layer.main_loop -> agent_layer.tool_executor: "tool calls"
+agent_layer.main_loop -> agent_layer.plan_mode: "EnterPlanMode"
+agent_layer.main_loop -> agent_layer.subagent_mgr: "Agent / Workflow"
+agent_layer.context_mgr -> agent_layer.main_loop: "compressed ctx"
+
+# Agent → Tools
+agent_layer.tool_executor -> tool_layer.file_tools: "read / write"
+agent_layer.tool_executor -> tool_layer.bash_tool: "shell cmd"
+agent_layer.tool_executor -> tool_layer.search_tools: "grep / search"
+agent_layer.tool_executor -> tool_layer.browser_tools: "navigate"
+agent_layer.tool_executor -> tool_layer.task_tools: "track tasks"
+agent_layer.tool_executor -> tool_layer.mcp_servers: "MCP call"
+
+# Agent → Anthropic
+agent_layer.main_loop -> external_layer.anthropic_api: "POST /messages" {
+  style.stroke: "#fbbf24"
+  style.stroke-width: 2
+}
+external_layer.anthropic_api -> external_layer.claude_models: "route"
+external_layer.anthropic_api -> agent_layer.main_loop: "stream response" {
+  style.stroke-dash: 3
+  style.stroke: "#fbbf24"
+}
+
+# Tools → External
+tool_layer.bash_tool -> external_layer.github: "gh CLI"
+tool_layer.search_tools -> external_layer.web_services: "HTTP"
+tool_layer.browser_tools -> external_layer.web_services: "Playwright"
+
+# Sub-agents loop back
+agent_layer.subagent_mgr -> external_layer.anthropic_api: "parallel calls" {
+  style.stroke-dash: 3
+}
