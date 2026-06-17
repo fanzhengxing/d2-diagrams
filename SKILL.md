@@ -529,6 +529,25 @@ d2 input.d2 output.svg
 
 ---
 
+## 🚨 红灯动作黑名单 (DO NOT DO)
+
+These actions will produce poor results or break the pipeline. **Never do these:**
+
+| # | 红灯动作 | 后果 | 正确做法 |
+|---|---------|------|---------|
+| 1 | **D2 source > 50 nodes** | SVG > 10MB, browser crashes | Split into multiple diagrams |
+| 2 | **Embedding SVG > 5MB in HTML** | Page freezes for 10+ seconds | Use PNG fallback or split |
+| 3 | **Using Chinese paths on Windows** | d2.exe can't find files | Use `C:\path\to\file.d2` or MSYS path |
+| 4 | **Mixing layout engines mid-diagram** | Unpredictable layout | Pick one engine for entire diagram |
+| 5 | **Using --theme with --sketch** | Theme ignored, blank output | Use one or the other |
+| 6 | **Referencing icons from CDN** | Offline mode breaks | Use local icons or skip icon |
+| 7 | **Not validating before rendering** | Silent failures, wasted time | Always `d2 validate` first |
+| 8 | **Using D2 for bar/line/pie charts** | D2 is NOT a charting library | Use officecli-chart-colors or Excel |
+| 9 | **Exporting to PPTX without checking** | PPTX export often fails silently | Export SVG first, convert manually |
+| 10 | **Creating diagrams with circular references** | Infinite layout loop | Break cycles with intermediate nodes |
+
+---
+
 ## Windows (git-bash) Notes
 - D2 `.exe` in `~/bin/` (Hermes) AND `~/AppData/Roaming/npm/` (Claude Code)
 - Use Windows absolute paths: `d2.exe "C:\\path\\to\\file.d2" out.svg`
