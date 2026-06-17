@@ -75,6 +75,7 @@ d2 input.d2 output.pdf       # 打印/正式文档
 d2 input.d2 output.pptx      # 演示文稿
 d2 input.d2 output.gif       # 动图
 d2 input.d2 output.txt       # ASCII 纯文本（微信聊天友好）
+d2 input.d2 output.html      # 交互式 HTML（暗色模式 + 流动画 + 点击详情）
 ```
 
 ## 🎯 核心能力
@@ -88,6 +89,7 @@ d2 input.d2 output.txt       # ASCII 纯文本（微信聊天友好）
 | 📺 **Live Reload** | `--watch` 修改即预览 |
 | 🏗️ **多场景** | layers/scenarios 一套图多视图 |
 | 🔒 **纯本地** | 全离线运行，无数据泄露风险 |
+| 🌐 **HTML 交互** | 自包含 HTML 图：暗色模式、流动画、点击节点详情、主题切换 |
 
 ## 🧩 融合来源
 
@@ -98,6 +100,7 @@ d2 input.d2 output.txt       # ASCII 纯文本（微信聊天友好）
 | **[architecture-diagram](https://github.com/Cocoon-AI/architecture-diagram-generator)** (5.9K⭐) | 语义配色体系 + HTML 暗色包装模板 + Summary Cards |
 | **excalidraw** (Hermes 自带) | `--sketch` 手绘美学 + 粉彩调色板 + 9 种图类型分类 |
 | **[fireworks-tech-graph](https://www.npmjs.com/package/@yizhiyanhua-ai/fireworks-tech-graph)** (CC) | UML 全套覆盖 + 形状词汇 + 正式图类型定义 |
+| **effective-html** | 全屏交互 HTML 图：暗色模式 + 流动画 + 点击详情 + 主题切换 + localStorage 持久化 |
 | **[design-system](https://github.com/Sunwood-ai-labs/draw-io-skill)** (CC) | 医疗暗色主题配色（科技蓝/健康绿/警告橙） |
 
 ## 📂 文件结构
@@ -113,7 +116,8 @@ d2-diagrams/
 │       ├── flowchart.d2        # 流程图示例
 │       └── sequence.d2         # 序列图示例
 ├── templates/
-│   └── architecture-wrapper.html  # SVG→HTML 暗色包装模板
+│   ├── architecture-wrapper.html  # SVG→HTML 暗色包装模板
+│   └── html-diagram.html          # 交互式 HTML 图模板（暗色模式+流动画+点击详情）
 └── test-prompts.json           # 验证测试用例
 ```
 
