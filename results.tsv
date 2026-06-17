@@ -1,2 +1,6 @@
 timestamp	commit	skill	old_score	new_score	status	dimension	note	eval_mode
 2026-06-17T20:00	baseline	d2-diagrams	-	76.0	baseline	-	初始基线评估	dry_run
+2026-06-17T20:05	7f69bd0	d2-diagrams	76.0	79.0	keep	dim4	🔴CHECKPOINT markers added	dry_run
+2026-06-17T20:10	b4997bf	d2-diagrams	79.0	83.0	keep	dim6+dim8	Data Flow/State Machine D2 examples added	dry_run
+2026-06-17T20:15	87158a2	d2-diagrams	83.0	85.5	keep	dim9	🚨red-light blacklist (10 items) added	dry_run
+2026-06-17T20:20	1ffd129	d2-diagrams	85.5	85.5	keep	runtime	P0 runtime neutrality (badge fix)	dry_run
