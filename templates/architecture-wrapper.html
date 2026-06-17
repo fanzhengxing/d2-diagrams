@@ -1,20 +1,3 @@
-# HTML 包装模板（由 architecture-diagram 的 Cocoon-AI 样式启发）
-
-当用户输出架构图的 SVG 后，可以将其包装进一个暗色主题的 HTML 页面，
-包含 Summary Cards、脉冲动画、网格背景。以下是模板结构。
-
-## 使用方法
-
-```bash
-# 1. 生成 SVG
-d2 --theme=200 arch.d2 arch.svg
-
-# 2. 创建 HTML 容器，将 SVG 内嵌
-```
-
-## HTML 模板结构
-
-```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -22,192 +5,498 @@ d2 --theme=200 arch.d2 arch.svg
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>[架构图标题]</title>
 <style>
-/* === 全局样式 === */
+/* ========== 全局 ========== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
+html, body { height: 100%; }
 body {
-  background: #020617;
+  background: #0a0f1a;
   color: #e2e8f0;
-  font-family: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', monospace;
-  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   display: flex;
-  justify-content: center;
-  padding: 2rem;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.container { max-width: 1200px; width: 100%; }
-
-/* === 页眉 === */
-.header {
+/* ========== 顶部栏 ========== */
+.top-bar {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: 16px;
+  padding: 16px 24px;
+  background: #0f172a;
   border-bottom: 1px solid #1e293b;
-  padding-bottom: 1rem;
+  flex-shrink: 0;
+  z-index: 10;
+}
+.top-bar h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+.top-bar .subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin-left: 8px;
+}
+.top-bar .controls {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
-.header h1 {
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: #f1f5f9;
-}
-
-/* 脉冲圆点 */
-.pulse-dot {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: #22d3ee;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(34, 211, 238, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
-}
-
-/* === 图表区域 === */
-.diagram-container {
-  background: #0f172a;
-  border-radius: 12px;
-  border: 1px solid #1e293b;
-  padding: 2rem;
-  overflow: auto;
-  margin-bottom: 2rem;
-}
-
-.diagram-container svg {
-  display: block;
-  margin: 0 auto;
-  max-width: 100%;
-  height: auto;
-}
-
-/* === Summary Cards === */
-.cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-}
-
-.card {
-  background: #0f172a;
-  border: 1px solid #1e293b;
+/* 按钮样式 */
+.btn {
+  font-size: 13px;
+  padding: 6px 14px;
   border-radius: 8px;
-  padding: 1.25rem;
-  transition: border-color 0.2s;
+  border: 1px solid #334155;
+  background: #1e293b;
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.btn:hover { background: #334155; color: #f1f5f9; }
+.btn.active { background: #1e40af; border-color: #3b82f6; color: #f1f5f9; }
+.btn-icon {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #1e293b;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-icon:hover { background: #334155; color: #f1f5f9; }
+
+/* 缩放信息 */
+.zoom-info {
+  font-size: 11px;
+  color: #64748b;
+  min-width: 40px;
+  text-align: center;
 }
 
-.card:hover { border-color: #334155; }
+/* ========== 画布 ========== */
+.canvas {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(30,41,59,0.3) 0%, transparent 70%),
+    linear-gradient(rgba(30,41,59,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30,41,59,0.06) 1px, transparent 1px);
+  background-size: 100% 100%, 24px 24px, 24px 24px;
+}
 
-.card-header {
+/* 变换容器 */
+.transform-container {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease-out;
+}
+
+/* SVG 包裹 */
+.svg-wrapper {
+  width: 100%;
+  height: 100%;
+}
+.svg-wrapper svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 修复 D2 深色主题背景色不一致 */
+.svg-wrapper svg .fill-N7 {
+  fill: transparent !important;
+}
+
+/* 修复 D2 SVG 文字颜色 — 确保在深色背景下可读 */
+.svg-wrapper svg text {
+  fill: #f1f5f9 !important;
+  font-size: inherit !important;
+}
+
+/* ========== 悬浮提示 ========== */
+.tooltip {
+  position: fixed;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #f1f5f9;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 100;
+  max-width: 280px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+.tooltip.show { opacity: 1; }
+.tooltip .tt-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+.tooltip .tt-desc { font-size: 12px; color: #94a3b8; line-height: 1.5; }
+
+/* ========== 图层筛选面板 ========== */
+.filter-panel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(15,23,42,0.95);
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 14px 16px;
+  z-index: 20;
+  min-width: 180px;
+  backdrop-filter: blur(8px);
+}
+.filter-panel h3 {
+  font-size: 12px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+.filter-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.card-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-}
-
-.card-dot.cyan { background: #22d3ee; }
-.card-dot.emerald { background: #34d399; }
-.card-dot.violet { background: #a78bfa; }
-.card-dot.amber { background: #fbbf24; }
-.card-dot.rose { background: #fb7185; }
-
-.card h3 {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: #94a3b8;
-}
-
-.card ul { list-style: none; }
-
-.card li {
-  font-size: 0.8rem;
+  gap: 8px;
+  padding: 5px 0;
+  cursor: pointer;
+  font-size: 13px;
   color: #cbd5e1;
-  padding: 0.25rem 0;
-  line-height: 1.5;
+  transition: color 0.15s;
 }
-
-.card li::before {
-  content: "•";
-  color: #22d3ee;
-  margin-right: 0.5rem;
+.filter-item:hover { color: #f1f5f9; }
+.filter-item .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
+.filter-item.dimmed { opacity: 0.35; }
 
-/* === 页脚 === */
-.footer {
-  margin-top: 2rem;
-  text-align: center;
-  font-size: 0.75rem;
-  color: #475569;
+/* ========== 底部信息 ========== */
+.bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 24px;
+  background: #0f172a;
   border-top: 1px solid #1e293b;
-  padding-top: 1rem;
+  font-size: 12px;
+  color: #475569;
+  flex-shrink: 0;
+}
+.bottom-bar .shortcuts {
+  display: flex;
+  gap: 16px;
+}
+.bottom-bar kbd {
+  display: inline-block;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 11px;
+  color: #94a3b8;
+  font-family: inherit;
 }
 
-/* === 响应式 === */
+/* ========== 响应式 ========== */
 @media (max-width: 768px) {
-  .cards { grid-template-columns: 1fr; }
+  .filter-panel { display: none; }
+  .top-bar h1 { font-size: 16px; }
+  .bottom-bar .shortcuts { display: none; }
 }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <div class="pulse-dot"></div>
-    <h1>[架构图标题]</h1>
-  </div>
 
-  <div class="diagram-container">
-    <!-- 在此嵌入 D2 输出的 SVG 内容 -->
-    [SVG_CONTENT]
-  </div>
-
-  <div class="cards">
-    <div class="card">
-      <div class="card-header">
-        <div class="card-dot cyan"></div>
-        <h3>[卡片1标题]</h3>
-      </div>
-      <ul>
-        <li>• [项目1]</li>
-        <li>• [项目2]</li>
-        <li>• [项目3]</li>
-      </ul>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <div class="card-dot emerald"></div>
-        <h3>[卡片2标题]</h3>
-      </div>
-      <ul>
-        <li>• [项目1]</li>
-        <li>• [项目2]</li>
-        <li>• [项目3]</li>
-      </ul>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <div class="card-dot violet"></div>
-        <h3>[卡片3标题]</h3>
-      </div>
-      <ul>
-        <li>• [项目1]</li>
-        <li>• [项目2]</li>
-        <li>• [项目3]</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="footer">
-    Generated by D2 · [项目名称] · [日期]
+<!-- ====== 顶部栏 ====== -->
+<div class="top-bar">
+  <h1>[架构图标题]</h1>
+  <span class="subtitle">[副标题/描述]</span>
+  <div class="controls">
+    <button class="btn" id="fitBtn" onclick="fitView()">适应窗口</button>
+    <button class="btn" id="resetBtn" onclick="resetView()">重置</button>
+    <button class="btn-icon" onclick="zoomIn()" title="放大">＋</button>
+    <span class="zoom-info" id="zoomInfo">100%</span>
+    <button class="btn-icon" onclick="zoomOut()" title="缩小">－</button>
+    <button class="btn-icon" id="themeBtn" onclick="toggleTheme()" title="切换主题">🌙</button>
   </div>
 </div>
+
+<!-- ====== 画布 ====== -->
+<div class="canvas" id="canvas">
+  <!-- 图层筛选面板 -->
+  <div class="filter-panel" id="filterPanel">
+    <h3>图层筛选</h3>
+    <div id="filterItems"></div>
+  </div>
+
+  <!-- 变换容器 -->
+  <div class="transform-container" id="transformContainer">
+    <div class="svg-wrapper" id="svgWrapper">
+      [SVG_CONTENT]
+    </div>
+  </div>
+</div>
+
+<!-- ====== 悬浮提示 ====== -->
+<div class="tooltip" id="tooltip">
+  <div class="tt-title" id="ttTitle"></div>
+  <div class="tt-desc" id="ttDesc"></div>
+</div>
+
+<!-- ====== 底部栏 ====== -->
+<div class="bottom-bar">
+  <span>[项目名称] · [日期] · Generated by D2</span>
+  <div class="shortcuts">
+    <span><kbd>滚轮</kbd> 缩放</span>
+    <span><kbd>拖拽</kbd> 平移</span>
+    <span><kbd>+/−</kbd> 缩放</span>
+    <span><kbd>0</kbd> 重置</span>
+    <span><kbd>L</kbd> 图层筛选</span>
+  </div>
+</div>
+
+<script>
+// ========== 状态 ==========
+let scale = 1, panX = 0, panY = 0, isDragging = false, startX, startY;
+let isDark = true;
+const container = document.getElementById('transformContainer');
+const canvas = document.getElementById('canvas');
+const zoomInfo = document.getElementById('zoomInfo');
+const tooltip = document.getElementById('tooltip');
+const ttTitle = document.getElementById('ttTitle');
+const ttDesc = document.getElementById('ttDesc');
+
+// ========== 缩放 ==========
+function updateTransform() {
+  container.style.transform = 'translate(' + panX + 'px, ' + panY + 'px) scale(' + scale + ')';
+  zoomInfo.textContent = Math.round(scale * 100) + '%';
+}
+
+function zoomIn() { scale = Math.min(scale * 1.25, 5); updateTransform(); }
+function zoomOut() { scale = Math.max(scale / 1.25, 0.1); updateTransform(); }
+
+function resetView() { scale = 1; panX = 0; panY = 0; updateTransform(); }
+
+function fitView() {
+  const svgEl = document.querySelector('#svgWrapper svg');
+  if (!svgEl) { scale = 1; panX = 0; panY = 0; updateTransform(); return; }
+  const vb = svgEl.viewBox.baseVal;
+  const cw = canvas.clientWidth;
+  const ch = canvas.clientHeight;
+  scale = Math.min(cw / (vb.width || 1), ch / (vb.height || 1)) * 0.9;
+  panX = (cw - vb.width * scale) / 2;
+  panY = (ch - vb.height * scale) / 2;
+  updateTransform();
+}
+
+// 滚轮缩放
+canvas.addEventListener('wheel', function(e) {
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  const delta = e.deltaY > 0 ? 0.9 : 1.1;
+  const newScale = Math.max(0.1, Math.min(5, scale * delta));
+  const ratio = newScale / scale;
+  panX = mx - ratio * (mx - panX);
+  panY = my - ratio * (my - panY);
+  scale = newScale;
+  updateTransform();
+}, { passive: false });
+
+// 拖拽平移
+canvas.addEventListener('mousedown', function(e) {
+  if (e.target.closest('.filter-panel') || e.target.closest('.top-bar')) return;
+  isDragging = true;
+  startX = e.clientX - panX;
+  startY = e.clientY - panY;
+  canvas.style.cursor = 'grabbing';
+});
+window.addEventListener('mousemove', function(e) {
+  if (!isDragging) return;
+  panX = e.clientX - startX;
+  panY = e.clientY - startY;
+  updateTransform();
+});
+window.addEventListener('mouseup', function() {
+  isDragging = false;
+  canvas.style.cursor = '';
+});
+
+// 键盘快捷键
+document.addEventListener('keydown', function(e) {
+  if (e.key === '+' || e.key === '=') zoomIn();
+  else if (e.key === '-') zoomOut();
+  else if (e.key === '0') resetView();
+  else if (e.key === 'f') fitView();
+  else if (e.key.toLowerCase() === 'l') toggleFilterPanel();
+  else if (e.key === 'Escape') hideTooltip();
+});
+
+// ========== 悬浮提示 ==========
+function showTooltip(el, title, desc) {
+  ttTitle.textContent = title;
+  ttDesc.textContent = desc || '';
+  tooltip.classList.add('show');
+  const rect = el.getBoundingClientRect();
+  let tx = rect.right + 8;
+  let ty = rect.top;
+  if (tx + 280 > window.innerWidth) tx = rect.left - 288;
+  if (ty + 80 > window.innerHeight) ty = window.innerHeight - 90;
+  tooltip.style.left = tx + 'px';
+  tooltip.style.top = ty + 'px';
+}
+function hideTooltip() { tooltip.classList.remove('show'); }
+
+// ========== 主题切换 ==========
+function toggleTheme() {
+  isDark = !isDark;
+  const btn = document.getElementById('themeBtn');
+  btn.textContent = isDark ? '🌙' : '☀️';
+  if (isDark) {
+    document.body.style.background = '#0a0f1a';
+    document.body.style.color = '#e2e8f0';
+    canvas.style.background =
+      'radial-gradient(circle at 50% 50%, rgba(30,41,59,0.3) 0%, transparent 70%),' +
+      'linear-gradient(rgba(30,41,59,0.06) 1px, transparent 1px),' +
+      'linear-gradient(90deg, rgba(30,41,59,0.06) 1px, transparent 1px)';
+  } else {
+    document.body.style.background = '#f8fafc';
+    document.body.style.color = '#1e293b';
+    canvas.style.background =
+      'linear-gradient(rgba(148,163,184,0.08) 1px, transparent 1px),' +
+      'linear-gradient(90deg, rgba(148,163,184,0.08) 1px, transparent 1px)';
+    canvas.style.backgroundSize = '100% 100%, 24px 24px, 24px 24px';
+  }
+}
+
+// ========== 图层筛选 ==========
+// D2 --theme=200 (Dark Mauve) fill class → 语义名称映射
+const d2FillClasses = {
+  // 标题/强调色
+  'AA1': '标题', 'AA2': '强调', 'AA3': '强调',
+  // 背景/中性色
+  'N1': '标题', 'N2': '标题', 'N3': '正文',
+  'N4': '正文', 'N5': '正文', 'N6': '正文', 'N7': '背景',
+  // 前景色（主题色）
+  'B1': '主色', 'B2': '主色',
+  'B3': '边框', 'B4': '边框', 'B5': '边框', 'B6': '边框',
+  // 辅助色
+  'BA1': '辅助', 'BA2': '辅助', 'BA3': '辅助',
+};
+
+// 颜色 → 语义分组（基于 D2 fill class 推断）
+const semanticGroups = {
+  '标题': ['.fill-N1', '.fill-N2'],
+  '主色': ['.fill-B1', '.fill-B2'],
+  '正文': ['.fill-N3', '.fill-N4', '.fill-N5'],
+  '边框': ['.fill-B3', '.fill-B4', '.fill-B5', '.fill-B6'],
+  '强调': ['.fill-AA2'],
+};
+
+function buildFilters() {
+  const svgEl = document.querySelector('#svgWrapper svg');
+  if (!svgEl) return;
+
+  // 收集 SVG 中使用的 fill class
+  const usedClasses = {};
+  svgEl.querySelectorAll('[class*="fill-"]').forEach(function(el) {
+    const classes = (el.getAttribute('class') || '').split(' ');
+    classes.forEach(function(cls) {
+      if (cls.match(/^fill-/)) {
+        usedClasses[cls] = (usedClasses[cls] || 0) + 1;
+      }
+    });
+  });
+
+  // 按语义分组显示
+  const items = document.getElementById('filterItems');
+  
+  // 显示所有层级选项
+  const allLayers = ['全部', '标题', '主色', '正文', '边框', '强调'];
+  allLayers.forEach(function(name) {
+    const div = document.createElement('div');
+    div.className = 'filter-item';
+    
+    // 获取颜色圆点
+    const colorMap = {
+      '全部': '#94a3b8',
+      '标题': '#CDD6F4',
+      '主色': '#CBA6F7',
+      '正文': '#A6ADC8',
+      '边框': '#585B70',
+      '强调': '#F38BA8',
+    };
+    div.innerHTML = '<span class="dot" style="background:' + colorMap[name] + '"></span><span>' + name + '</span>';
+    div.onclick = function() { toggleLayerByGroup(name, allLayers.indexOf(name) === 0); };
+    items.appendChild(div);
+  });
+}
+
+function toggleLayerByGroup(name, isAll) {
+  const svgEl = document.querySelector('#svgWrapper svg');
+  if (!svgEl) return;
+
+  // 先恢复所有
+  svgEl.querySelectorAll('[class*="fill-"]').forEach(function(el) {
+    el.style.opacity = '1';
+  });
+
+  if (isAll) return;
+
+  // 隐藏不匹配的
+  const showClasses = semanticGroups[name] || [];
+  const hideClasses = [];
+  Object.keys(semanticGroups).forEach(function(key) {
+    if (key !== name) {
+      hideClasses.push(...semanticGroups[key]);
+    }
+  });
+
+  // 简化：按 class 名字符串匹配
+  svgEl.querySelectorAll('[class*="fill-"]').forEach(function(el) {
+    const cls = (el.getAttribute('class') || '');
+    let shouldShow = isAll;
+    for (const sc of showClasses) {
+      if (cls.includes(sc.replace('.', ''))) {
+        shouldShow = true;
+        break;
+      }
+    }
+    if (!shouldShow) {
+      el.style.opacity = '0.08';
+    }
+  });
+}
+
+function toggleFilterPanel() {
+  const panel = document.getElementById('filterPanel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+// ========== 初始化 ==========
+window.addEventListener('load', function() {
+  buildFilters();
+  setTimeout(fitView, 100);
+});
+
+window.addEventListener('resize', function() {
+  // 不自动fit，保持用户当前视图
+});
+</script>
 </body>
 </html>
-```

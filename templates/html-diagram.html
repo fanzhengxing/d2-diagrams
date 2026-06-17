@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+<!-- Apply dark mode before paint -->
+<script>
+  (function(){
+    var s=localStorage.getItem('theme');
+    var d=s?s==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
+    document.documentElement.classList.toggle('dark',d);
+  })();
+</script>
+<style>
+  :root {
+    --bg:#FAF9F5; --surface:#FFF; --ink:#141413; --body:#3D3D3A;
+    --muted:#87867F; --line:#D1CFC5;
+    --accent:#D97757; --accent-soft:rgba(217,119,87,0.10);
+    --success:#788C5D; --success-soft:rgba(120,140,93,0.12);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  html.dark {
+    --bg:#141413; --surface:#1F1F1D; --ink:#FAF9F5; --body:#D1CFC5;
+    --muted:#87867F; --line:#3D3D3A;
+    --accent:#E48A6E; --accent-soft:rgba(228,138,110,0.14);
+    --success:#9DB07C; --success-soft:rgba(157,176,124,0.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--body);font-family:var(--sans);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+  
+  /* Top bar */
+  .bar{display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid var(--line)}
+  .bar h1{font-family:var(--sans);font-size:18px;color:var(--ink);font-weight:500}
+  .chips{display:flex;gap:6px;margin-left:auto}
+  .chip{font-family:var(--mono);font-size:11px;padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--muted);cursor:pointer}
+  .chip.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+  
+  /* Stage */
+  .stage{flex:1;position:relative;min-height:0}
+  .stage svg{position:absolute;inset:0;width:100%;height:100%}
+  
+  /* Nodes */
+  .node{cursor:pointer}
+  .node rect{fill:var(--surface);stroke:var(--line);stroke-width:1.5;rx:10;transition:stroke .15s}
+  .node:hover rect{stroke:var(--muted)}
+  .node.lit rect{stroke:var(--accent);stroke-width:2}
+  .node .t{font-family:var(--sans);font-size:14px;font-weight:600;fill:var(--ink)}
+  .node .m{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+  
+  /* Edges */
+  .edge{stroke:var(--muted);stroke-width:1.6;fill:none}
+  .edge.lit{opacity:1;stroke:var(--accent);stroke-dasharray:7 5;animation:march .9s linear infinite}
+  @keyframes march{to{stroke-dashoffset:-12}}
+  
+  /* Zones */
+  .zone rect{fill:var(--accent-soft);stroke:var(--line);stroke-dasharray:5 5;rx:16}
+  .zone .ztitle{font-family:var(--mono);font-size:12px;fill:var(--muted);text-transform:uppercase}
+  
+  /* Detail card */
+  .card{position:absolute;max-width:360px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:0 6px 24px rgba(0,0,0,.08)}
+  #detail{right:16px;bottom:16px}
+  #detail h3{font-size:17px;color:var(--ink);margin-bottom:2px}
+  #detail p{font-size:12.5px;line-height:1.55}
+</style>
+</head>
+<body>
+<div class="bar">
+  <h1>{title}</h1>
+  <div class="chips">
+    <button class="chip on" data-flow="all">全部</button>
+    <!-- Add flow chips based on diagram content -->
+  </div>
+  <button id="themeToggle">深色</button>
+</div>
+<div class="stage" id="stage">
+  <svg viewBox="0 0 {WIDTH} {HEIGHT}">
+    <!-- SVG diagram from D2 or hand-crafted -->
+  </svg>
+</div>
+<div class="card" id="detail" style="display:none">
+  <h3 id="detail-title"></h3>
+  <p id="detail-body"></p>
+</div>
+<script>
+document.getElementById('themeToggle').onclick=function(){
+  var d=document.documentElement.classList.toggle('dark');
+  localStorage.setItem('theme',d?'dark':'light');
+};
+document.querySelectorAll('.chip').forEach(function(chip){
+  chip.onclick=function(){
+    document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on')});
+    this.classList.add('on');
+    var flow=this.dataset.flow;
+    var stage=document.getElementById('stage');
+    stage.classList.toggle('flowing',flow!=='all');
+    document.querySelectorAll('.edge').forEach(function(e){
+      e.classList.toggle('lit',flow==='all'||e.dataset.flow===flow);
+    });
+  };
+});
+document.querySelectorAll('.node').forEach(function(node){
+  node.onclick=function(){
+    var title=this.querySelector('.t')?.textContent||'';
+    var body=this.querySelector('.m')?.textContent||'';
+    document.getElementById('detail-title').textContent=title;
+    document.getElementById('detail-body').textContent=body;
+    document.getElementById('detail').style.display='block';
+  };
+});
+</script>
+</body>
+</html>
