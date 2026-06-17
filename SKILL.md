@@ -63,6 +63,12 @@ open arch.svg    # macOS
 | ASCII | `d2 input.d2 output.txt` | WeChat inline, terminals |
 | HTML | wrap SVG with architecture-wrapper.html | Dark-theme summary page |
 
+**Default format rule** (when user doesn't specify):
+- Default → **SVG** (web/docs/sharing)
+- User says "微信/PPT/截图" → **PNG**
+- User says "可以点/交互/全屏" → **HTML**
+- User says "终端/文本" → **ASCII**
+
 ## Workflow
 
 ### Step 1: Understand the Request
@@ -108,36 +114,17 @@ layer1.componentA -> layer1.componentB: connects
 ```bash
 d2 validate input.d2
 d2 input.d2 output.svg
-d2 --theme=200 --sketch input.d2 output.svg   # dark + hand-drawn
+d2 --sketch input.d2 output.svg               # hand-drawn style
+d2 --theme=200 input.d2 output.svg            # dark theme (no --sketch)
 d2 --watch input.d2 output.svg                 # live reload
 ```
-
-### macOS Installation
-
-```bash
-brew install d2
-d2 version  # verify
-```
-
-### Linux Installation
-
-```bash
-# Ubuntu/Debian via apt
-sudo apt-get install d2
-# Or via snap
-sudo snap install d2 --classic
-```
-
-### Minimum Version
-
-D2 v0.6.0+ required (2023-09 release). Older versions lack `--layout=elk` and some themes.
 
 ### Step 5: Optional HTML Wrapper (Architecture only)
 1. Generate SVG, then load `templates/architecture-wrapper.html`
 2. Replace `[SVG_CONTENT]` with the SVG markup
 3. Fill in Summary Card titles and items
 
-### Step 7: HTML Interactive Diagram (effective-html fusion)
+### Step 6: HTML Interactive Diagram (effective-html fusion)
 
 When user wants a **full-screen interactive HTML diagram** (not just static SVG), generate a self-contained HTML file with:
 
@@ -192,7 +179,7 @@ d2 arch.d2 arch.svg
 - Replace `[SVG_CONTENT]` with SVG markup
 - Fill Summary Cards
 
-**4. Or generate interactive HTML** (Step 7):
+**4. Or generate interactive HTML** (Step 6):
 - Copy `templates/html-diagram.html`
 - Replace placeholders
 - Save as `arch.html`
@@ -249,6 +236,48 @@ bi: BI展示 { shape: hexagon; style.fill: "#fbbf24" }
 source -> etl: 采集 {style.stroke-dash: 3}
 etl -> warehouse: 加载
 warehouse -> bi: 查询
+```
+
+### Timeline
+- Use sequential containers as phases, with milestone nodes inside
+
+```d2
+vars: { d2-config: { layout-engine: elk } }
+Q1: { style.fill: "#a5d8ff"
+  里程碑1: 需求评审
+  里程碑2: 技术方案
+}
+Q2: { style.fill: "#b2f2bb"
+  里程碑3: 开发完成
+  里程碑4: 测试通过
+}
+Q3: { style.fill: "#ffd8a8"
+  里程碑5: 上线发布
+}
+Q1.里程碑2 -> Q2.里程碑3
+Q2.里程碑4 -> Q3.里程碑5
+```
+
+### Mind Map
+- Root container with nested sub-containers for branches
+
+```d2
+vars: { d2-config: { layout-engine: elk } }
+根主题: { style.fill: "#22d3ee"; style.font-size: 18 }
+分支A: { style.fill: "#b2f2bb"
+  子节点A1: 要点一
+  子节点A2: 要点二
+}
+分支B: { style.fill: "#ffd8a8"
+  子节点B1: 要点三
+  子节点B2: 要点四
+}
+分支C: { style.fill: "#d0bfff"
+  子节点C1: 要点五
+}
+根主题 -> 分支A
+根主题 -> 分支B
+根主题 -> 分支C
 ```
 
 ### Agent/Memory
@@ -417,7 +446,7 @@ winget install Terrastruct.D2
 curl -fsSL https://d2lang.com/install.sh | sh -s --
 
 # Verify
-d2 version   # should print v0.6.0+
+d2 version   # should print v0.7.1+
 ```
 
 ### Windows path issues (git-bash)
@@ -516,8 +545,8 @@ d2 input.d2 output.svg
 
 | Scenario | Why NOT | Use instead |
 |----------|---------|-------------|
-| **20+ complex data flows** | D2 gets messy with cross-connections | **纯CSS/HTML手写** (see `references/css-handwritten-diagrams.md`) |
-| **Need large readable text** | D2 default font small & grey | **PureCSS** (see `references/css-handwritten-diagrams.md`) |
+| **20+ complex data flows** | D2 gets messy with cross-connections | 手写 SVG/HTML |
+| **Need large readable text** | D2 default font small & grey | 手写 HTML with CSS |
 | Animated charts/graphs | D2 outputs static SVG/PNG | p5js, manim-video |
 | Bar/line/pie charts | D2 not a charting library | officecli-chart-colors (Excel) |
 | Photo-realistic diagrams | D2 is vector diagrams | comfyui, canvas-design |
@@ -549,7 +578,32 @@ These actions will produce poor results or break the pipeline. **Never do these:
 ---
 
 ## Windows (git-bash) Notes
-- D2 `.exe` in `~/bin/` (Hermes) AND `~/AppData/Roaming/npm/` (Claude Code)
+- D2 `.exe` in `~/bin/` (Hermes) AND system PATH after winget install
 - Use Windows absolute paths: `d2.exe "C:\\path\\to\\file.d2" out.svg`
 - `/tmp/file.d2` (C:\\tmp\\file.d2) not seen by d2.exe — use explicit path
 - Install: `winget install Terrastruct.D2` or download via ghproxy
+
+## Installation
+
+### Windows
+```bash
+winget install Terrastruct.D2
+d2 version  # verify v0.7.1+
+```
+
+### macOS
+```bash
+brew install d2
+d2 version  # verify v0.7.1+
+```
+
+### Linux
+```bash
+# Official install script (recommended)
+curl -fsSL https://d2lang.com/install.sh | sh -s --
+# Or via snap
+sudo snap install d2 --classic
+d2 version  # verify v0.7.1+
+```
+
+D2 v0.7.1+ required. Older versions lack some themes and `--layout=elk` stability.

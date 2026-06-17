@@ -82,13 +82,6 @@ with open('output.html', 'w') as f:
 
 **注意**：shell 内联 python 长字符串容易引号冲突，**务必用 `write_file` 写脚本文件再执行**。
 
-## 完整参考
-
-邯郸基层医疗平台架构图：
-- D2 源文件: `health_platform_arch.d2`
-- 输出 SVG: `health_platform_arch_dark.svg` (用 `--theme=200` 深色)
-- 交互 HTML: `health_platform_arch.html`
-
 ## 注意事项
 
 1. **D2 深色主题背景**：渲染时用 `--theme=200` 生成深色 SVG，HTML 模板也是深色背景，两者颜色可能不完全一致，`fill-N7` 覆盖是关键修复

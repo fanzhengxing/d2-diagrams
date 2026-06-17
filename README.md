@@ -115,10 +115,9 @@ d2-diagrams/
 │       ├── architecture.d2     # 架构图示例
 │       ├── flowchart.d2        # 流程图示例
 │       └── sequence.d2         # 序列图示例
-├── templates/
-│   ├── architecture-wrapper.html  # SVG→HTML 暗色包装模板
-│   └── html-diagram.html          # 交互式 HTML 图模板（暗色模式+流动画+点击详情）
-└── test-prompts.json           # 验证测试用例
+└── templates/
+    ├── architecture-wrapper.html  # SVG→HTML 暗色包装模板
+    └── html-diagram.html          # 交互式 HTML 图模板（暗色模式+流动画+点击详情）
 ```
 
 ## 🛡️ 安全
