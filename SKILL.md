@@ -68,7 +68,7 @@ open arch.svg    # macOS
 ### Step 1: Understand the Request
 Determine: diagram type, core message, output format, style preference.
 
-### Step 2: 🛑 Choose Diagram Type (pause for confirmation)
+### Step 2: 🛑 CHECKPOINT · STOP — Choose Diagram Type
 
 | Type | D2 Approach | Best For |
 |------|-------------|----------|
@@ -86,7 +86,10 @@ Determine: diagram type, core message, output format, style preference.
 | Data Flow | Source -> transform -> sink | ETL, data pipelines |
 | Agent/Memory | Input -> reason -> tools -> memory -> output | AI architecture |
 
-**Always confirm with the user** before generating — especially diagram type and output format.
+**🔴 CHECKPOINT · CONFIRM** — before generating:
+1. Confirm diagram type with user (especially for complex diagrams)
+2. Confirm output format (SVG for web, PNG for WeChat, etc.)
+3. Confirm style preference (dark/light, hand-drawn, semantic colors)
 
 ### Step 3: Write D2 Source
 
@@ -463,10 +466,11 @@ d2 input.d2 output.svg
 - ❌ Access private data or credentials
 - ❌ Modify system settings
 
-### When to STOP and ask the user:
-1. Output format requires a tool not available (e.g. PNG needs Chromium)
-2. D2 CLI is not installed and user needs to confirm installation
-3. User request doesn't clearly map to a supported diagram type
+### 🛑 CHECKPOINT · STOP — When to ask the user:
+1. **🔴 Output format requires unavailable tool** (e.g. PNG needs Chromium)
+2. **🔴 D2 CLI not installed** — confirm with user before guiding installation
+3. **🔴 Request unclear** — user request doesn't clearly map to a supported diagram type
+4. **🛑 Large diagram (>20 nodes)** — confirm splitting strategy
 
 ---
 
