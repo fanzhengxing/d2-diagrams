@@ -236,6 +236,44 @@ d2 arch.d2 arch.svg
 服务 -> 用户: 200 OK {style.stroke-dash: 3}
 ```
 
+### Data Flow
+- Use layered containers for tiers: Source → Transform → Sink
+- Use `style.stroke-dash: 3` for async/buffered flows
+- Use `style.fill` to distinguish data states
+
+```d2
+source: { shape: cylinder; style.fill: "#22d3ee"; label: "数据源" }
+etl: ETL处理 { style.fill: "#34d399" }
+warehouse: 数据仓库 { shape: cylinder; style.fill: "#a78bfa" }
+bi: BI展示 { shape: hexagon; style.fill: "#fbbf24" }
+source -> etl: 采集 {style.stroke-dash: 3}
+etl -> warehouse: 加载
+warehouse -> bi: 查询
+```
+
+### Agent/Memory
+- Input -> reason -> tools -> memory -> output
+- Use containers for each agent phase
+
+### State Machine (detailed)
+- States: containers with `shape: rounded_rect`
+- Transitions: labeled arrows with conditions
+- Use `near:` to position transitions
+
+```d2
+vars: { d2-config: { layout-engine: elk } }
+建档: { shape: rounded_rect; style.fill: "#22d3ee" }
+随访: { shape: rounded_rect; style.fill: "#34d399" }
+评估: { shape: rounded_rect; style.fill: "#fbbf24" }
+干预: { shape: rounded_rect; style.fill: "#a78bfa" }
+复查: { shape: rounded_rect; style.fill: "#fb7185" }
+建档 -> 随访: 患者注册
+随访 -> 评估: 数据收集
+评估 -> 干预: 风险分级
+干预 -> 复查: 制定方案
+复查 -> 随访: 指标达标
+```
+
 ### Use Case Diagram (UML)
 ```d2
 actor: {shape: person}
@@ -478,8 +516,8 @@ d2 input.d2 output.svg
 
 | Scenario | Why NOT | Use instead |
 |----------|---------|-------------|
-| **7+ independent data flows** | **D2垂直泳道文字小、交叉多；纯CSS横向泳道清晰** | **纯CSS/HTML手写** (见 `references/css-handwritten-diagrams.md`) |
-| **Need large readable text** | **D2 default font small & grey** | **PureCSS** (see `references/css-handwritten-diagrams.md`) |
+| **20+ complex data flows** | D2 gets messy with cross-connections | **纯CSS/HTML手写** (see `references/css-handwritten-diagrams.md`) |
+| **Need large readable text** | D2 default font small & grey | **PureCSS** (see `references/css-handwritten-diagrams.md`) |
 | Animated charts/graphs | D2 outputs static SVG/PNG | p5js, manim-video |
 | Bar/line/pie charts | D2 not a charting library | officecli-chart-colors (Excel) |
 | Photo-realistic diagrams | D2 is vector diagrams | comfyui, canvas-design |
