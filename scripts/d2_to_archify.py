@@ -106,6 +106,11 @@ body {{
   align-items: center;
   justify-content: center;
   padding: 60px 20px 20px;
+  transition: background 0.3s;
+}}
+/* 深色模式下 diagram-container 背景变暗 */
+[data-theme="dark"] .diagram-container {{
+  background: var(--bg);
 }}
 .diagram-container svg {{
   max-width: 100%;
