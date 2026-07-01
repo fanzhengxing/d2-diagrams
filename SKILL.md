@@ -1,16 +1,15 @@
 ---
 name: d2-diagrams
 description: >-
-  One skill to diagram them all. D2-powered: describe in text, get professional
-  diagrams in SVG/PNG/PDF/PPTX/GIF/ASCII/HTML — with auto layout.
-  Absorbs: architecture-diagram (semantic colors + HTML wrapper) + excalidraw (hand-drawn + pastel) + fireworks-tech-graph (UML) + effective-html (interactive HTML).
-
+  Text-to-diagram: D2-powered SVG/PNG/PDF/PPTX/GIF/ASCII/HTML with auto layout.
+  Supports 13+ diagram types, 12 shapes, semantic color palettes, sketch mode.
   TRIGGER on: 画图/架构图/流程图/序列图/类图/ER图/思维导图/时间线/网络拓扑/
   状态机/用例图/对比图/数据流图/可视化/拓扑图/示意图/
   architecture/flowchart/sequence diagram/class diagram/er diagram/
   timeline/mind map/uml/system diagram/network topology/
   create a diagram/draw diagram/generate diagram/data flow diagram/interactive diagram/full-screen diagram
-version: 1.0.0
+version: 2.2.1
+last_updated: 2026-07-01
 license: MIT
 dependencies:
   - d2 (terrastruct/d2 v0.7.1+)
@@ -29,12 +28,13 @@ metadata:
 
 Built on [terrastruct/d2](https://github.com/terrastruct/d2) (24.4K⭐).
 
-| Source | What's absorbed |
-|--------|----------------|
-| **architecture-diagram** | Semantic color palette + HTML wrapper with Summary Cards + pulse animation + dark grid bg |
-| **excalidraw / excalidraw-diagram-generator** | Hand-drawn aesthetics via `--sketch` + pastel palette + 9 diagram types |
-| **fireworks-tech-graph** | Full UML coverage (class/use case/state machine/ER) + formal diagram types + shape vocabulary |
-| **design-system** (CC) | Healthcare dark-theme palette (tech blue / health green / warning orange) |
+### 支持文件
+
+| 类型 | 文件 | 用途 |
+|------|------|------|
+| 脚本 | `scripts/d2_to_archify.py` | D2 SVG → Archify HTML 转换器 |
+
+> **Note:** 原版 Archify 模板已从仓库移除以减少体积。HTML 交付现在使用内置的轻量模板，通过 `d2_to_archify.py` 脚本自动生成。
 
 ## Quick Start
 
@@ -61,7 +61,7 @@ open arch.svg    # macOS
 | PPTX | `d2 input.d2 output.pptx` | Presentations |
 | GIF | `d2 input.d2 output.gif` | Animated diagrams |
 | ASCII | `d2 input.d2 output.txt` | WeChat inline, terminals |
-| HTML | wrap SVG with architecture-wrapper.html | Dark-theme summary page |
+| HTML | wrap SVG with Archify template | Interactive, dark/light toggle |
 
 **Default format rule** (when user doesn't specify):
 - Default → **SVG** (web/docs/sharing)
@@ -120,9 +120,9 @@ d2 --watch input.d2 output.svg                 # live reload
 ```
 
 ### Step 5: Optional HTML Wrapper (Architecture only)
-1. Generate SVG, then load `templates/architecture-wrapper.html`
-2. Replace `[SVG_CONTENT]` with the SVG markup
-3. Fill in Summary Card titles and items
+1. Generate SVG, then use `scripts/d2_to_archify.py` to wrap it
+2. Run: `python scripts/d2_to_archify.py output.svg output.html "Title" "Subtitle"`
+3. The script generates a self-contained HTML with theme toggle and export buttons
 
 ### Step 6: HTML Interactive Diagram (effective-html fusion)
 
@@ -139,13 +139,67 @@ When user wants a **full-screen interactive HTML diagram** (not just static SVG)
 **Workflow:**
 1. Generate D2 source for the diagram structure
 2. Render to SVG (or hand-write SVG for complex layouts)
-3. Copy `templates/html-diagram.html` as base, replace placeholders:
-   - `{title}` → diagram title
-   - `{WIDTH}` / `{HEIGHT}` → SVG viewBox dimensions
-   - `<!-- SVG diagram from D2 or hand-crafted -->` → actual SVG markup
-   - Add flow chips for different scenarios
-   - Add clickable nodes with detail cards
+3. Use `scripts/d2_to_archify.py` to wrap SVG in interactive HTML template
 4. Save as `.html` file — fully self-contained, no external dependencies
+
+### Step 7: HTML Delivery (Archify 单文件交付)
+
+基于原版 [Archify](https://github.com/terrastruct/archify) 实现单文件 HTML 交付，支持暗色/亮色切换和 4× 导出。
+
+**核心原则：** D2 负责生成 SVG，然后用内置的轻量模板包裹 SVG，提供暗色/亮色切换、导出菜单等功能。D2 的其他输出格式（SVG/PNG/PDF/PPTX/GIF/ASCII）完全不受影响。
+
+**工作流程：**
+
+1. **D2 生成 SVG**：`d2 input.d2 output.svg`（正常流程，不变）
+2. **用脚本包裹**：运行 `python scripts/d2_to_archify.py output.svg output.html "标题" "副标题"`
+3. **交付单文件 HTML**：包含主题切换、导出菜单、信息卡片
+
+**实现方式：**
+
+使用提供的转换脚本 `scripts/d2_to_archify.py`：
+
+```bash
+python scripts/d2_to_archify.py output.svg output.html "标题" "副标题"
+```
+
+或作为库调用：
+
+```python
+from scripts.d2_to_archify import render_archify_html
+
+html = render_archify_html(
+    svg_content=open('output.svg').read(),
+    title="架构图",
+    subtitle="系统架构说明",
+    cards=[
+        {'title': '架构', 'items': ['三层设计', 'REST API', 'PostgreSQL']},
+        {'title': '安全', 'items': ['HTTPS 加密', '认证中间件', '限流']}
+    ]
+)
+
+with open('output.html', 'w', encoding='utf-8') as f:
+    f.write(html)
+```
+
+**内置模板特性：**
+
+- **CSS 变量系统**：`:root` + `[data-theme="dark"]` + `[data-theme="light"]`，切换 `data-theme` 属性即可
+- **localStorage 持久化**：`localStorage.getItem('theme')` 记住用户选择
+- **应用前注入脚本**：`<script>` 在 `<head>` 防止亮色闪烁
+- **工具栏**：主题切换 + 导出菜单（PNG 4×/JPEG/WebP/SVG）
+- **剪贴板复制**：canvas 缩放 4 倍绘制 SVG，生成高分辨率 PNG
+- **信息卡片区域**：可自定义标题和条目
+- **打印样式**：`@media print` 隐藏工具栏，横版输出
+- **总计约 15KB**，完全自包含，无外部依赖
+
+**注意事项：**
+
+- D2 生成的 SVG 已有完整 viewBox 和 namespace，直接插入即可
+- 如需自定义卡片内容，通过 `cards` 参数传入
+- 其他格式（SVG/PNG/PDF 等）完全不受影响，仍由 D2 直接生成
+
+**参考文件：**
+- `scripts/d2_to_archify.py` — 自动化转换脚本
 
 ---
 
@@ -175,13 +229,11 @@ d2 arch.d2 arch.svg
 ```
 
 **3. Wrap in HTML** (optional, for architecture diagrams):
-- Copy `templates/architecture-wrapper.html`
-- Replace `[SVG_CONTENT]` with SVG markup
-- Fill Summary Cards
+- Use `python scripts/d2_to_archify.py arch.svg arch.html "架构图" "系统架构说明"`
+- Or customize with Python API for cards and metadata
 
 **4. Or generate interactive HTML** (Step 6):
-- Copy `templates/html-diagram.html`
-- Replace placeholders
+- Use `scripts/d2_to_archify.py` with custom cards parameter
 - Save as `arch.html`
 
 ---
@@ -192,7 +244,6 @@ d2 arch.d2 arch.svg
 - Layers: Client -> Gateway -> Services -> Data/Storage -> External
 - `shape: cylinder` for databases, `shape: hexagon` for gateways
 - Semantic colors: cyan=frontend, green=backend, violet=database, amber=cloud, rose=security
-- Theme: `--theme=200` or `--theme=303` (C4)
 
 ```d2
 展示层: { 前端: {shape: hexagon; style.fill: "#22d3ee"} }
@@ -452,10 +503,10 @@ d2 version   # should print v0.7.1+
 ```
 
 ### Windows path issues (git-bash)
-**Problem:** `/tmp/file.d2` maps to `C:\tmp\file.d2` which d2.exe can't see.
-**Fix:** Use Windows absolue paths with single quotes:
+**Problem:** `/tmp/file.d2` maps to `C:\\tmp\\file.d2` which d2.exe can't see.
+**Fix:** Use Windows absolute paths with single quotes:
 ```bash
-d2 'C:\Users\you\diagram.d2' out.svg
+d2 'C:\\Users\\you\\diagram.d2' out.svg
 # OR use MSYS path that maps correctly
 d2 '/c/Users/you/diagram.d2' out.svg
 ```
@@ -568,7 +619,7 @@ These actions will produce poor results or break the pipeline. **Never do these:
 |---|---------|------|---------|
 | 1 | **D2 source > 50 nodes** | SVG > 10MB, browser crashes | Split into multiple diagrams |
 | 2 | **Embedding SVG > 5MB in HTML** | Page freezes for 10+ seconds | Use PNG fallback or split |
-| 3 | **Using Chinese paths on Windows** | d2.exe can't find files | Use `C:\path\to\file.d2` or MSYS path |
+| 3 | **Using Chinese paths on Windows** | d2.exe can't find files | Use `C:\\path\\to\\file.d2` or MSYS path |
 | 4 | **Mixing layout engines mid-diagram** | Unpredictable layout | Pick one engine for entire diagram |
 | 5 | **Using --theme with --sketch** | Theme ignored, blank output | Use one or the other |
 | 6 | **Referencing icons from CDN** | Offline mode breaks | Use local icons or skip icon |
@@ -581,8 +632,8 @@ These actions will produce poor results or break the pipeline. **Never do these:
 
 ## Windows (git-bash) Notes
 - D2 `.exe` in `~/bin/` (Hermes) AND system PATH after winget install
-- Use Windows absolute paths: `d2.exe "C:\\path\\to\\file.d2" out.svg`
-- `/tmp/file.d2` (C:\\tmp\\file.d2) not seen by d2.exe — use explicit path
+- Use Windows absolute paths: `d2.exe "C:\\\\path\\\\to\\\\file.d2" out.svg`
+- `/tmp/file.d2` (C:\\\\tmp\\\\file.d2) not seen by d2.exe — use explicit path
 - Install: `winget install Terrastruct.D2` or download via ghproxy
 
 ## Installation

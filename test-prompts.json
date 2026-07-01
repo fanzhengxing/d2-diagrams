@@ -1,1 +1,61 @@
-[{"id":1,"prompt":"画一个医疗系统架构图，包含用户前端、API网关、用户服务、订单服务、MySQL数据库，用中文标签，深色科技风","expected":"生成.arch.d2文件+渲染为SVG，节点用语义化颜色，层级布局"},{"id":2,"prompt":"画一个数据流图，展示患者数据从采集到分析的流程","expected":"生成.d2文件+HTML交互页面，横向泳道布局"},{"id":3,"prompt":"生成一个状态机图，描述患者慢病管理流程","expected":"生成.d2文件+SVG，带状态转换箭头"}]
+{
+  "skill": "d2-diagrams",
+  "version": "2.2.1",
+  "last_updated": "2026-07-01",
+  "tests": [
+    {
+      "id": "trigger-1",
+      "prompt": "帮我画一个微服务架构图",
+      "should_trigger": true,
+      "reason": "明确提到'架构图'"
+    },
+    {
+      "id": "trigger-2",
+      "prompt": "draw a flowchart for the deployment process",
+      "should_trigger": true,
+      "reason": "明确提到'flowchart'"
+    },
+    {
+      "id": "trigger-3",
+      "prompt": "生成一个ER图表示用户和订单的关系",
+      "should_trigger": true,
+      "reason": "明确提到'ER图'"
+    },
+    {
+      "id": "non-trigger-1",
+      "prompt": "帮我写一篇关于微服务架构的文章",
+      "should_trigger": false,
+      "reason": "要求写文章，不是画图"
+    },
+    {
+      "id": "non-trigger-2",
+      "prompt": "解释一下Docker的工作原理",
+      "should_trigger": false,
+      "reason": "纯文字解释，不需要图表"
+    },
+    {
+      "id": "non-trigger-3",
+      "prompt": "帮我画一个柱状图显示销售数据",
+      "should_trigger": false,
+      "reason": "D2不是图表库，柱状图应使用officecli-chart-colors或Excel"
+    },
+    {
+      "id": "edge-1",
+      "prompt": "用D2画一个系统架构图，输出HTML格式",
+      "should_trigger": true,
+      "reason": "明确使用D2，属于直接同行场景"
+    },
+    {
+      "id": "edge-2",
+      "prompt": "画一个手绘风格的流程图",
+      "should_trigger": true,
+      "reason": "可以使用D2的--sketch模式"
+    },
+    {
+      "id": "edge-3",
+      "prompt": "生成一个20个节点的复杂数据流图",
+      "should_trigger": true,
+      "reason": "虽然节点多，但仍属于D2能力范围，但需要提醒用户拆分"
+    }
+  ]
+}
